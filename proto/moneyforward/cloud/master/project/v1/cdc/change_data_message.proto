@@ -1,0 +1,93 @@
+syntax = "proto3";
+option go_package = "protos/pbmodel";
+
+package moneyforward.cloud.master.project.v1.cdc;
+
+import "google/protobuf/timestamp.proto";
+import "google/type/date.proto";
+
+message ChangeDataMessage {
+  // Published and sent by subsystems for requests idempotency. Send it back in the Kafka message header.
+  string request_id = 1;
+  // Sequential number of the messages in the request.
+  uint32 message_number = 2;
+  // The total count of events in the request starting with `1`.`
+  uint32 total_message_count = 3;
+  // tenant uid from Navis
+  uint64 tenant_uid = 4;
+  repeated Record records = 5;
+}
+
+message Record {
+  enum OperationType {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 2;
+  }
+  OperationType operation_type = 1;
+  oneof data {
+    Project project = 2;
+    ProjectTag project_tag = 3;
+    Tag tag = 4;
+  }
+}
+
+message Project{
+  string   id = 1;
+  string   biid = 2;
+  optional string department_biid = 3;
+  uint64   tenant_uid = 4;
+  optional uint64 manager_uid = 5;
+  optional string manager_code = 21;
+  optional string manager_name = 22;
+  repeated DeputyManager deputy_managers = 23;
+  string   code = 6;
+  string   name = 7;
+  google.type.Date valid_from = 8;
+  google.type.Date valid_to = 9;
+  google.protobuf.Timestamp transaction_from = 10;
+  google.protobuf.Timestamp transaction_to = 11;
+  uint64   transaction_from_by = 12;
+  uint64   transaction_to_by = 13;
+  string   transaction_from_by_name = 14;
+  string   transaction_to_by_name = 15;
+  string   transaction_from_by_srv = 16;
+  string   transaction_to_by_srv = 17;
+  uint32   disp_order = 18;
+  string   search_key = 19;
+  optional string related_project_biid = 24;
+  bool  abort_flag = 25;
+  uint32   version = 20;
+  // next number 26;
+}
+
+message DeputyManager{
+  uint64 uid = 1;
+  optional string code = 2;
+  string name = 3;
+  // next number 4;
+}
+
+message ProjectTag{
+  string project_id = 1;
+  uint64 tenant_uid = 2;
+  string tag_biid = 3;
+  // next number 4;
+}
+
+message Tag{
+  string   id = 1;
+  string   biid = 2;
+  uint64   tenant_uid = 3;
+  string   name = 4;
+  google.protobuf.Timestamp transaction_from = 5;
+  google.protobuf.Timestamp transaction_to = 6;
+  uint64   transaction_from_by = 7;
+  uint64   transaction_to_by = 8;
+  string   transaction_from_by_name = 9;
+  string   transaction_to_by_name = 10;
+  string   transaction_from_by_srv = 11;
+  string   transaction_to_by_srv = 12;
+  uint32   version = 13;
+  // next number 14;
+}

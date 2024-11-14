@@ -1,0 +1,8 @@
+services:
+  # buf
+  buf-generate:
+    image: bufbuild/buf:latest
+    command: generate
+  buf-lint:
+    image: bufbuild/buf:latest
+    command: lint
